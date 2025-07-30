@@ -10,7 +10,7 @@ export default class UsuarioController {
             res.status(201).json({ mensagem: `Usuário ${primeiroNome} ${ultimoNome} cadastrado com sucesso!`})
         } catch (error) {
             console.error(`Erro ao cadastrar usuário: ${error.message}`)
-            return res.status(500).json({ mensagem: `Erro ao cadastrar usuário: ${error.message}` })
+            return res.status(error.status || 500).json({ mensagem: `Erro ao cadastrar usuário: ${error.message}` })
         }
     }
 }

@@ -1,4 +1,5 @@
 import { PrismaClient } from "../../generated/prisma/index.js";
+import bcrypt from 'bcrypt'
 const prisma = new PrismaClient()
 
 export default class AuthServices {
@@ -11,15 +12,25 @@ export default class AuthServices {
             })
 
             if (!usuario) {
-                throw new Error("Usuário não encontrado.")
+                const error = new Error("Usuário não encontrado.")
+                error.status = 404
+                throw error
             }
 
-            if (usuario.senha === senha) {
+            const senhaValida = await bcrypt.compare(senha, usuario.senha)
+
+            if (senhaValida) {
                 return usuario
             } else {
-                throw new Error("Senha inválida.")
+                const error = new Error("Senha inválida.")
+                error.status = 401
+                throw error
             }
         } catch (error) {
+            if (error.status) {
+                throw error
+            }
+
             throw new Error(`Erro na realizar a autenticação: ${error.message}`)
         }
     }
