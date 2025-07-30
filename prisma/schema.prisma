@@ -10,7 +10,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
@@ -18,8 +18,10 @@ model Usuario {
   id String @id @default(uuid())
   primeiroNome String
   ultimoNome String
-  cpf String
-  telefone String
-  email String
+  cpf String @unique
+  telefone String 
+  email String @unique
+  senha String
   endereco String
+  telefoneConfirmado Boolean @default(false)
 }
