@@ -47,4 +47,9 @@ export default class FuncionarioController {
             return res.status(error.status || 500).json({ mensagem: `Erro ao cadastrar funcionário: ${error.message}` })
         }
     }
+
+    static async atribuirFuncao(req, res) {
+        const { id_funcionario, id_funcao } = req.body
+
+    }
 }

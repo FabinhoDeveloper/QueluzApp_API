@@ -67,4 +67,56 @@ export default class FuncionarioServices {
 
         return funcionario
     }
+
+    static async atribuirFuncao(id_funcionario, id_funcao) {
+        const funcionario = await prisma.funcionario.findUnique({
+            where: {
+                id_funcionario
+            }
+        })
+
+        if (!funcionario) {
+            const erro = new Error("Funcionário não encontrado.")
+            erro.status = 404
+            throw erro
+        }
+
+        const funcao = await prisma.funcao.findUnique({
+            where: {
+                id_funcao
+            }
+        })
+
+        if (!funcao) {
+            const erro = new Error("Função não encontrada.")
+            erro.status = 404
+            throw erro
+        }
+
+        const funcionarioFuncaoExistente = await prisma.funcionario_funcao.findFirst({
+            where: {
+                funcionario_id_funcionario: id_funcionario,
+                funcao_id_funcao: id_funcao
+            }
+        })
+
+        if (funcionarioFuncaoExistente) {
+            const erro = new Error("Função já atribuída ao funcionário.")
+            erro.status = 409
+            throw erro
+        }
+
+        const funcionarioFuncao = await prisma.funcionario_funcao.create({
+            data: {
+                funcionario_id_funcionario: id_funcionario,
+                funcao_id_funcao: id_funcao
+            }
+        })
+
+        return funcionarioFuncao
+    }
+
+    static async removerFuncao(id_funcionario, id_funcao) {}
+
+    static async excluirFuncionario(id_funcionario) {}
 }
