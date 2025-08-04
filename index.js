@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }))
 // Configuração das Rotas
 import UsuarioRoutes from './source/routes/UsuarioRoutes.js'
 import AuthRoutes from './source/routes/AuthRoutes.js'
+import FuncionarioRoutes from './source/routes/FuncionarioRoutes.js'
 
 app.get("/", (req, res) => {
     res.json({ mensagem: `API do Queluz+ rodando na porta ${PORT}` })
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 
 app.use("/usuario", UsuarioRoutes)
 app.use("/auth", AuthRoutes)
+app.use("/funcionario", FuncionarioRoutes)
 
 // Instância do Servidor
 app.listen(PORT, () => {
