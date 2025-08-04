@@ -1,11 +1,15 @@
-import { PrismaClient } from "../../generated/prisma/index.js";
+import prisma from "../config/prisma.js";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient()
-
 export default class UsuarioServices {
-    static async cadastrarUsuario(primeiroNome, ultimoNome, cpf, telefone, email, senha, endereco) {
-        if (!primeiroNome || !ultimoNome || !cpf || !telefone || !email || !senha || !endereco) {
+    static async listarUsuarios() {
+        const usuarios = await prisma.usuario.findMany()
+
+        return usuarios
+    }
+
+    static async cadastrarUsuario(primeiro_nome, ultimo_nome, cpf, telefone, email, senha, endereco) {
+        if (!primeiro_nome || !ultimo_nome || !cpf || !telefone || !email || !senha || !endereco) {
             const error = new Error("Todos os campos são obrigatórios.")
             error.status = 400
             throw error
@@ -15,7 +19,8 @@ export default class UsuarioServices {
             where: {
             OR: [
                 { cpf },
-                { email }
+                { email },
+                { telefone }
             ]
             }
         });
@@ -40,8 +45,8 @@ export default class UsuarioServices {
         try {
             const usuario = await prisma.usuario.create({
                 data: {
-                    primeiroNome,
-                    ultimoNome,
+                    primeiro_nome,
+                    ultimo_nome,
                     cpf,
                     telefone,
                     email,
@@ -57,7 +62,7 @@ export default class UsuarioServices {
     }
 
     static async editarUsuario(primeiroNome, ultimoNome, cpf, telefone, email, endereco) {
-
+        
     }
 
     static async excluirUsuario() {

@@ -5,9 +5,9 @@ export default class AuthController {
         const { email, senha } = req.body
 
         try {
-            const usuario = await AuthServices.login(email, senha)
+            const resposta = await AuthServices.login(email, senha)
 
-            res.status(200).json({ mensagem: `Usuário ${usuario.primeiroNome} ${usuario.ultimoNome} autenticado com sucesso!`})
+            res.status(200).json({ mensagem: `Usuário autenticado com sucesso!`, resposta })
         } catch (error) {
             console.error(`Erro ao realizar login: ${error.message}`)
             return res.status(error.status || 500).json({ mensagem: `Erro ao realizar login: ${error.message}` })

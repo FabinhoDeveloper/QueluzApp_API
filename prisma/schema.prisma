@@ -1,27 +1,165 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgres"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id String @id @default(uuid())
-  primeiroNome String
-  ultimoNome String
-  cpf String @unique
-  telefone String 
-  email String @unique
-  senha String
-  endereco String
-  telefoneConfirmado Boolean @default(false)
+model acompanhante {
+  id_acompanhante     Int                   @id @default(autoincrement())         
+  nome                String                @db.VarChar(255)
+  endereco            String                @db.VarChar(255)
+  email               String                @db.VarChar(255)
+  viagem_acompanhante viagem_acompanhante[]
+}
+
+model carro {
+  id_carro                     Int           @id @default(autoincrement())      
+  tipo_carro_id_tipo_carro     Int?
+  status_carro_id_status_carro Int?
+  modelo                       String?       @db.VarChar(255)
+  placa                        String?       @db.VarChar(25)
+  capacidade                   Int?
+  status_carro                 status_carro? @relation(fields: [status_carro_id_status_carro], references: [id_status_carro], onDelete: NoAction, onUpdate: NoAction)
+  tipo_carro                   tipo_carro?   @relation(fields: [tipo_carro_id_tipo_carro], references: [id_tipo_carro], onDelete: NoAction, onUpdate: NoAction)
+  viagem                       viagem[]
+}
+
+model categoria_mensagem {
+  id_categoria_mensagem Int                  @id @default(autoincrement())
+  nome                  String               @db.VarChar(45)
+  mensagem_ouvidoria    mensagem_ouvidoria[]
+}
+
+model funcao {
+  id_funcao          Int                  @id @default(autoincrement())
+  nome               String               @db.VarChar(255)
+  funcionario_funcao funcionario_funcao[]
+}
+
+model funcionario {
+  id_funcionario     Int                  @id @default(autoincrement())
+  usuario_id_usuario Int?
+  matricula          Int?
+  usuario            usuario?             @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  funcionario_funcao funcionario_funcao[]
+  viagem             viagem[]
+}
+
+model funcionario_funcao {
+  funcionario_id_funcionario Int
+  funcao_id_funcao           Int
+  funcao                     funcao      @relation(fields: [funcao_id_funcao], references: [id_funcao], onDelete: NoAction, onUpdate: NoAction)
+  funcionario                funcionario @relation(fields: [funcionario_id_funcionario], references: [id_funcionario], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([funcionario_id_funcionario, funcao_id_funcao])
+}
+
+model mensagem_ouvidoria {
+  id_mensagem_ouvidoria                    Int                 @id @default(autoincrement())
+  status_mensagem_id_status_mensagem       Int?
+  usuario_id_usuario                       Int?
+  categoria_mensagem_id_categoria_mensagem Int?
+  assunto                                  String?             @db.VarChar(255)
+  nome_solicitante                         String?             @db.VarChar(255)
+  email_solicitante                        String?             @db.VarChar(255)
+  numero_protocolo                         String?             @db.Char(15)
+  categoria_mensagem                       categoria_mensagem? @relation(fields: [categoria_mensagem_id_categoria_mensagem], references: [id_categoria_mensagem], onDelete: NoAction, onUpdate: NoAction)
+  status_mensagem                          status_mensagem?    @relation(fields: [status_mensagem_id_status_mensagem], references: [id_status_mensagem], onDelete: NoAction, onUpdate: NoAction)
+  usuario                                  usuario?            @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model parada {
+  id_parada                                Int                 @id @default(autoincrement())
+  solicitante_viagem_id_solicitante_viagem Int?
+  viagem_id_viagem                         Int?
+  endereco                                 String              @db.VarChar(255)
+  solicitante_viagem                       solicitante_viagem? @relation(fields: [solicitante_viagem_id_solicitante_viagem], references: [id_solicitante_viagem], onDelete: NoAction, onUpdate: NoAction)
+  viagem                                   viagem?             @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model solicitante_viagem {
+  id_solicitante_viagem Int                   @id @default(autoincrement())
+  nome_completo         String                @db.VarChar(255)
+  telefone              String                @db.Char(11)
+  endereco              String                @db.VarChar(255)
+  email                 String                @db.VarChar(255)
+  parada                parada[]
+  viagem_acompanhante   viagem_acompanhante[]
+}
+
+model status_carro {
+  id_status_carro Int     @id @default(autoincrement())
+  status_carro    String  @db.VarChar(255)
+  carro           carro[]
+}
+
+model status_mensagem {
+  id_status_mensagem Int                  @id @default(autoincrement())
+  nome               String               @db.VarChar(45)
+  mensagem_ouvidoria mensagem_ouvidoria[]
+}
+
+model status_viagem {
+  id_status_viagem Int              @id @default(autoincrement())
+  status_viagem    String           @db.VarChar(255)
+  viagem_usuario   viagem_usuario[]
+}
+
+model tipo_carro {
+  id_tipo_carro Int     @id @default(autoincrement())
+  nome          String  @db.VarChar(255)
+  carro         carro[]
+}
+
+model usuario {
+  id_usuario          Int                  @id @default(autoincrement())
+  primeiro_nome       String               @db.VarChar(255)
+  ultimo_nome         String               @db.VarChar(255)
+  cpf                 String               @unique @db.Char(11)
+  telefone            String               @unique @db.Char(11)
+  email               String               @unique @db.VarChar(255)
+  senha               String               @db.VarChar(255)
+  endereco            String               @db.VarChar(255)
+  telefone_confirmado Boolean?             @default(false)
+  funcionario         funcionario[]
+  mensagem_ouvidoria  mensagem_ouvidoria[]
+  viagem_usuario      viagem_usuario[]
+}
+
+model viagem {
+  id_viagem                  Int                   @id @default(autoincrement())
+  funcionario_id_funcionario Int?
+  carro_id_carro             Int?
+  data_partida               DateTime              @db.Timestamp(6)
+  parada                     parada[]
+  carro                      carro?                @relation(fields: [carro_id_carro], references: [id_carro], onDelete: NoAction, onUpdate: NoAction)
+  funcionario                funcionario?          @relation(fields: [funcionario_id_funcionario], references: [id_funcionario], onDelete: NoAction, onUpdate: NoAction)
+  viagem_acompanhante        viagem_acompanhante[]
+  viagem_usuario             viagem_usuario[]
+}
+
+model viagem_acompanhante {
+  viagem_id_viagem                         Int
+  acompanhante_id_acompanhante             Int
+  solicitante_viagem_id_solicitante_viagem Int?
+  acompanhante                             acompanhante        @relation(fields: [acompanhante_id_acompanhante], references: [id_acompanhante], onDelete: NoAction, onUpdate: NoAction)
+  solicitante_viagem                       solicitante_viagem? @relation(fields: [solicitante_viagem_id_solicitante_viagem], references: [id_solicitante_viagem], onDelete: NoAction, onUpdate: NoAction)
+  viagem                                   viagem              @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([viagem_id_viagem, acompanhante_id_acompanhante])
+}
+
+model viagem_usuario {
+  viagem_id_viagem               Int
+  usuario_id_usuario             Int
+  status_viagem_id_status_viagem Int?
+  status_viagem                  status_viagem? @relation(fields: [status_viagem_id_status_viagem], references: [id_status_viagem], onDelete: NoAction, onUpdate: NoAction)
+  usuario                        usuario        @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  viagem                         viagem         @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([viagem_id_viagem, usuario_id_usuario])
 }

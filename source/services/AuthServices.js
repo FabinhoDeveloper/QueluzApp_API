@@ -1,6 +1,8 @@
-import { PrismaClient } from "../../generated/prisma/index.js";
+import prisma from "../config/prisma.js";
+import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-const prisma = new PrismaClient()
+
+const SECRET = process.env.SECRET
 
 export default class AuthServices {
     static async login(email, senha) {
@@ -18,9 +20,13 @@ export default class AuthServices {
             }
 
             const senhaValida = await bcrypt.compare(senha, usuario.senha)
+            
+            const token = jwt.sign({ id: usuario.id, email: usuario.email }, SECRET, {
+                expiresIn: '7d'
+            })
 
             if (senhaValida) {
-                return usuario
+                return { token }
             } else {
                 const error = new Error("Senha inválida.")
                 error.status = 401
