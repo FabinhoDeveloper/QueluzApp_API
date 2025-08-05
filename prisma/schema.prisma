@@ -23,6 +23,7 @@ model carro {
   modelo                       String?       @db.VarChar(255)
   placa                        String?       @db.VarChar(25)
   capacidade                   Int?
+  fabricante                   String        @db.VarChar(255)
   status_carro                 status_carro? @relation(fields: [status_carro_id_status_carro], references: [id_status_carro], onDelete: NoAction, onUpdate: NoAction)
   tipo_carro                   tipo_carro?   @relation(fields: [tipo_carro_id_tipo_carro], references: [id_tipo_carro], onDelete: NoAction, onUpdate: NoAction)
   viagem                       viagem[]
