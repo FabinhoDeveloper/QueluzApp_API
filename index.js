@@ -9,21 +9,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Configuração das Rotas
-import UsuarioRoutes from './source/routes/UsuarioRoutes.js'
 import AuthRoutes from './source/routes/AuthRoutes.js'
-import FuncionarioRoutes from './source/routes/FuncionarioRoutes.js'
-import OuvidoriaRoutes from './source/routes/OuvidoriaRoutes.js'
-import CarroRoutes from './source/routes/CarroRoutes.js'
+import indexRoutes from './source/routes/index.js'
 
-app.get("/", (req, res) => {
-    res.json({ mensagem: `API do Queluz+ rodando na porta ${PORT}` })
-})
+import verificacaoToken from './source/middlewares/verificacaoToken.js'
 
-app.use("/usuario", UsuarioRoutes)
-app.use("/auth", AuthRoutes)
-app.use("/funcionario", FuncionarioRoutes)
-app.use("/ouvidoria", OuvidoriaRoutes)
-app.use("/carro", CarroRoutes)
+app.use('/auth', AuthRoutes)
+app.use('/', /*verificacaoToken,*/ indexRoutes) // Middleware de verificação de token aplicado globalmente
 
 // Instância do Servidor
 app.listen(PORT, () => {
