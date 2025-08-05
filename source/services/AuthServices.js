@@ -26,7 +26,7 @@ export default class AuthServices {
             })
 
             if (senhaValida) {
-                return { token }
+                return { usuario, token }
             } else {
                 const error = new Error("Senha inválida.")
                 error.status = 401
