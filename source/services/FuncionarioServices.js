@@ -10,7 +10,12 @@ export default class FuncionarioServices {
     static async listarFuncionarios() {
         const funcionarios = await prisma.funcionario.findMany({
             include: {
-                usuario: true
+                usuario: true,
+                funcionario_funcao: {
+                    include: {
+                        funcao: true
+                    }
+                }
             }
         })
 
@@ -116,7 +121,48 @@ export default class FuncionarioServices {
         return funcionarioFuncao
     }
 
-    static async removerFuncao(id_funcionario, id_funcao) {}
+    static async removerFuncao(id_funcionario, id_funcao) {
+        const funcionarioFuncao = await prisma.funcionario_funcao.findFirst({
+            where: {
+                funcionario_id_funcionario: id_funcionario,
+                funcao_id_funcao: id_funcao
+            }
+        })
 
-    static async excluirFuncionario(id_funcionario) {}
+        if (!funcionarioFuncao) {
+            const erro = new Error("Atribuição de função não encontrada.")
+            erro.status = 404
+            throw erro
+        }
+
+        const funcaoRemovida = await prisma.funcionario_funcao.delete({
+            where: {
+                id_funcionario_funcao: funcionarioFuncao.id_funcionario_funcao
+            }
+        })
+
+        return funcaoRemovida
+    }
+
+    static async excluirFuncionario(id_funcionario) {
+        const funcionario = await prisma.funcionario.findUnique({
+            where: {
+                id_funcionario
+            }
+        })
+
+        if (!funcionario) {
+            const erro = new Error("Funcionário não encontrado.")
+            erro.status = 404
+            throw erro
+        }
+
+        await prisma.funcionario.delete({
+            where: {
+                id_funcionario
+            }
+        })
+
+        return funcionario
+    }
 }
