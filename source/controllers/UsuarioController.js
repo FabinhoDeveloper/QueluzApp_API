@@ -24,4 +24,16 @@ export default class UsuarioController {
             return res.status(error.status || 500).json({ mensagem: `Erro ao cadastrar usuário: ${error.message}` })
         }
     }
+
+    static async confirmarTelefone(req, res) {
+        const { idUsuario } = req.params;
+
+        try {
+            const usuario = await UsuarioServices.confirmarTelefone(Number(idUsuario));
+            res.status(200).json({ mensagem: `Telefone do usuário ${usuario.primeiro_nome} confirmado com sucesso!`, usuario });
+        } catch (error) {
+            console.error(`Erro ao confirmar telefone: ${error.message}`);
+            return res.status(error.status || 500).json({ mensagem: `Erro ao confirmar telefone: ${error.message}` });
+        }
+    }
 }

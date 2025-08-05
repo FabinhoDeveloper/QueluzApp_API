@@ -47,7 +47,7 @@ export default class OuvidoriaController {
 
     static async cadastrarMensagem(req, res) {
         const { idStatus, idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem } = req.body;
-
+        
         try {
             const novaMensagem = await OuvidoriaServices.cadastrarMensagem(idStatus, idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem);
             res.status(201).json({ mensagem: `Mensagem cadastrada com sucesso!`, novaMensagem });
@@ -76,6 +76,19 @@ export default class OuvidoriaController {
         } catch (error) {
             console.error(`Erro ao listar mensagens por usuário: ${error.message}`);
             return res.status(error.status || 500).json({ mensagem: `Erro ao listar mensagens por usuário: ${error.message}` });
+        }
+    }
+
+    static async listarMensagemPorProtocolo(req, res) {
+        const { numeroProtocolo } = req.params;
+
+        try {
+            const mensagem = await OuvidoriaServices.listarMensagemPorProtocolo(numeroProtocolo);
+            
+            res.status(200).json(mensagem);
+        } catch (error) {
+            console.error(`Erro ao listar mensagem por protocolo: ${error.message}`);
+            return res.status(error.status || 500).json({ mensagem: `Erro ao listar mensagem por protocolo: ${error.message}` });
         }
     }
 

@@ -54,8 +54,8 @@ export default class OuvidoriaServices {
         return status
     }
 
-    static async cadastrarMensagem(idStatus, idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem) {
-        const novaMensagem = await prisma.mensagem.create({
+    static async cadastrarMensagem(idStatus, idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem) {        
+        const novaMensagem = await prisma.mensagem_ouvidoria.create({
             data: {
                 status_mensagem_id_status_mensagem: idStatus,
                 usuario_id_usuario: idUsuario,
@@ -67,6 +67,7 @@ export default class OuvidoriaServices {
                 mensagem
             }
         })
+
         return novaMensagem
     }
 
@@ -82,6 +83,22 @@ export default class OuvidoriaServices {
             }
         })
         return mensagens
+    }
+
+    static async listarMensagemPorProtocolo(numeroProtocolo) {
+        const mensagem = await prisma.mensagem.findFirst({
+            where: {
+                numero_protocolo: numeroProtocolo
+            }
+        })
+
+        if (!mensagem) {
+            const erro = new Error("Mensagem não encontrada.");
+            erro.status = 404;
+            throw erro;
+        }
+
+        return mensagem
     }
 
     static async alterarStatusMensagem(idMensagem, idStatus) {

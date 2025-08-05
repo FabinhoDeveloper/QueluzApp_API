@@ -68,4 +68,35 @@ export default class UsuarioServices {
     static async excluirUsuario() {
        
     }
+
+    static async confirmarTelefone(idUsuario) {
+        const usuario = await prisma.usuario.findUnique({
+            where: {
+                id_usuario: idUsuario
+            }
+        });
+
+        if (!usuario) {
+            const error = new Error("Usuário não encontrado.");
+            error.status = 404;
+            throw error;
+        }
+
+        if (usuario.telefone_confirmado) {
+            const error = new Error("Telefone já confirmado.");
+            error.status = 400;
+            throw error;
+        }
+
+        const usuarioAtualizado = await prisma.usuario.update({
+            where: {
+                id_usuario: idUsuario
+            },
+            data: {
+                telefone_confirmado: true
+            }
+        });
+
+        return usuarioAtualizado;
+    }
 }
