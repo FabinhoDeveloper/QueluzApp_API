@@ -9,7 +9,7 @@ datasource db {
 }
 
 model acompanhante {
-  id_acompanhante     Int                   @id @default(autoincrement())         
+  id_acompanhante     Int                   @id @default(autoincrement())
   nome                String                @db.VarChar(255)
   endereco            String                @db.VarChar(255)
   email               String                @db.VarChar(255)
@@ -17,7 +17,7 @@ model acompanhante {
 }
 
 model carro {
-  id_carro                     Int           @id @default(autoincrement())      
+  id_carro                     Int           @id @default(autoincrement())
   tipo_carro_id_tipo_carro     Int?
   status_carro_id_status_carro Int?
   modelo                       String?       @db.VarChar(255)
@@ -67,6 +67,8 @@ model mensagem_ouvidoria {
   nome_solicitante                         String?             @db.VarChar(255)
   email_solicitante                        String?             @db.VarChar(255)
   numero_protocolo                         String?             @db.Char(15)
+  mensagem                                 String              @db.VarChar(255)
+  data_envio                               DateTime?           @default(now()) @db.Timestamp(6)
   categoria_mensagem                       categoria_mensagem? @relation(fields: [categoria_mensagem_id_categoria_mensagem], references: [id_categoria_mensagem], onDelete: NoAction, onUpdate: NoAction)
   status_mensagem                          status_mensagem?    @relation(fields: [status_mensagem_id_status_mensagem], references: [id_status_mensagem], onDelete: NoAction, onUpdate: NoAction)
   usuario                                  usuario?            @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)

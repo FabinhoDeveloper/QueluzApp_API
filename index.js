@@ -12,6 +12,9 @@ app.use(express.urlencoded({ extended: true }))
 import UsuarioRoutes from './source/routes/UsuarioRoutes.js'
 import AuthRoutes from './source/routes/AuthRoutes.js'
 import FuncionarioRoutes from './source/routes/FuncionarioRoutes.js'
+import OuvidoriaRoutes from './source/routes/OuvidoriaRoutes.js'
+
+import gerarNumeroProtocolo from './source/helpers/gerarNumeroProtocolo.js'
 
 app.get("/", (req, res) => {
     res.json({ mensagem: `API do Queluz+ rodando na porta ${PORT}` })
@@ -20,6 +23,9 @@ app.get("/", (req, res) => {
 app.use("/usuario", UsuarioRoutes)
 app.use("/auth", AuthRoutes)
 app.use("/funcionario", FuncionarioRoutes)
+app.use("/ouvidoria", OuvidoriaRoutes)
+
+console.log(`Número de Protocolo Gerado: ${gerarNumeroProtocolo()}`)
 
 // Instância do Servidor
 app.listen(PORT, () => {
