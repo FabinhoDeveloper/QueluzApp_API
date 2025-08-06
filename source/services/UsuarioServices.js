@@ -61,12 +61,58 @@ export default class UsuarioServices {
         }
     }
 
-    static async editarUsuario(primeiroNome, ultimoNome, cpf, telefone, email, endereco) {
-        
+    static async editarUsuario(idUsuario, primeiroNome, ultimoNome, cpf, telefone, email, senha, endereco) {
+        const usuarioExistente = await prisma.usuario.findUnique({
+            where: {
+                id_usuario: idUsuario
+            }
+        });
+
+        if (!usuarioExistente) {
+            const error = new Error("Usuário não encontrado.");
+            error.status = 404;
+            throw error;
+        }
+
+        const saltRounds = 10;
+        const senhaHash = await bcrypt.hash(senha, saltRounds);
+
+        const usuarioAtualizado = await prisma.usuario.update({
+            where: {
+                id_usuario: idUsuario
+            },
+            data: {
+                primeiro_nome: primeiroNome,  
+                ultimo_nome: ultimoNome,
+                cpf,
+                telefone,
+                email,
+                senha: senhaHash,
+                endereco
+            }
+        });
+
+        return usuarioAtualizado;
     }
 
-    static async excluirUsuario() {
-       
+    static async excluirUsuario(idUsuario) {
+        const usuarioExistente = await prisma.usuario.findUnique({
+            where: {
+                id_usuario: idUsuario
+            }
+        });
+
+        if (!usuarioExistente) {
+            const error = new Error("Usuário não encontrado.");
+            error.status = 404;
+            throw error;
+        }
+
+        await prisma.usuario.delete({
+            where: {
+                id_usuario: idUsuario
+            }
+        });
     }
 
     static async confirmarTelefone(idUsuario) {
