@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt'
 const SECRET = process.env.SECRET
 
 export default class AuthServices {
-    static async login(email, senha) {
+    static async login(email, senha) {        
         try {
             const usuario = await prisma.usuario.findUnique({
                 where: {

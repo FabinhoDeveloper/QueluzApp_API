@@ -1,4 +1,4 @@
-import ViagemController from "../controllers/ViagemController";
+import ViagemController from "../controllers/ViagemController.js";
 
 import { Router } from "express";
 const router = Router()
