@@ -23,33 +23,11 @@ export default class OuvidoriaController {
         }
     }
 
-    static async cadastrarStatusMensagem(req, res) {
-        const { nome } = req.body;
-
-        try {
-            const status = await OuvidoriaServices.cadastrarStatusMensagem(nome);
-            res.status(201).json({ mensagem: `Status ${nome} cadastrado com sucesso!`, status });
-        } catch (error) {
-            console.error(`Erro ao cadastrar status: ${error.message}`);
-            return res.status(error.status || 500).json({ mensagem: `Erro ao cadastrar status: ${error.message}` });
-        }
-    }
-
-    static async listarStatusMensagens(req, res) {
-        try {
-            const status = await OuvidoriaServices.listarStatusMensagens();
-            res.status(200).json(status);
-        } catch (error) {
-            console.error(`Erro ao listar status: ${error.message}`);
-            return res.status(error.status || 500).json({ mensagem: `Erro ao listar status: ${error.message}` });
-        }
-    }
-
     static async cadastrarMensagem(req, res) {
-        const { idStatus, idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem } = req.body;
+        const { idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem } = req.body;
         
         try {
-            const novaMensagem = await OuvidoriaServices.cadastrarMensagem(idStatus, idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem);
+            const novaMensagem = await OuvidoriaServices.cadastrarMensagem( idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem);
             res.status(201).json({ mensagem: `Mensagem cadastrada com sucesso!`, novaMensagem });
         } catch (error) {
             console.error(`Erro ao cadastrar mensagem: ${error.message}`);
@@ -94,10 +72,10 @@ export default class OuvidoriaController {
 
     static async alterarStatusMensagem(req, res) {
         const { idMensagem } = req.params;
-        const { idStatus } = req.body;
+        const { status } = req.body;
 
         try {
-            const mensagem = await OuvidoriaServices.alterarStatusMensagem(idMensagem, idStatus);
+            const mensagem = await OuvidoriaServices.alterarStatusMensagem(idMensagem, status);
             res.status(200).json({ mensagem: `Status da mensagem alterado com sucesso!`, mensagem });
         } catch (error) {
             console.error(`Erro ao alterar status da mensagem: ${error.message}`);

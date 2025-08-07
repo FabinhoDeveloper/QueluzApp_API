@@ -61,7 +61,6 @@ model funcionario_funcao {
 
 model mensagem_ouvidoria {
   id_mensagem_ouvidoria                    Int                 @id @default(autoincrement())
-  status_mensagem_id_status_mensagem       Int?
   usuario_id_usuario                       Int?
   categoria_mensagem_id_categoria_mensagem Int?
   assunto                                  String?             @db.VarChar(255)
@@ -70,8 +69,8 @@ model mensagem_ouvidoria {
   numero_protocolo                         String?             @db.Char(15)
   mensagem                                 String              @db.VarChar(255)
   data_envio                               DateTime?           @default(now()) @db.Timestamp(6)
+  status_mensagem                          String?             @db.VarChar(255)
   categoria_mensagem                       categoria_mensagem? @relation(fields: [categoria_mensagem_id_categoria_mensagem], references: [id_categoria_mensagem], onDelete: NoAction, onUpdate: NoAction)
-  status_mensagem                          status_mensagem?    @relation(fields: [status_mensagem_id_status_mensagem], references: [id_status_mensagem], onDelete: NoAction, onUpdate: NoAction)
   usuario                                  usuario?            @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
 }
 
@@ -101,9 +100,8 @@ model status_carro {
 }
 
 model status_mensagem {
-  id_status_mensagem Int                  @id @default(autoincrement())
-  nome               String               @db.VarChar(45)
-  mensagem_ouvidoria mensagem_ouvidoria[]
+  id_status_mensagem Int    @id @default(autoincrement())
+  nome               String @db.VarChar(45)
 }
 
 model status_viagem {

@@ -28,36 +28,9 @@ export default class OuvidoriaServices {
         return categorias
     }
 
-    static async cadastrarStatusMensagem(nome) {
-        const statusExistente = await prisma.status_mensagem.findFirst({
-            where: {
-                nome
-            }
-        });
-
-        if (statusExistente) {
-            const erro = new Error("Status já cadastrado.");
-            erro.status = 400;
-            throw erro;
-        }
-
-        const status = await prisma.status_mensagem.create({
-            data: {
-                nome
-            }
-        })
-        return status
-    }
-
-    static async listarStatusMensagens() {
-        const status = await prisma.status_mensagem.findMany()
-        return status
-    }
-
-    static async cadastrarMensagem(idStatus, idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem) {        
+    static async cadastrarMensagem( idUsuario, idCategoria, assunto, nome_solicitante, email_solicitante, mensagem ) {        
         const novaMensagem = await prisma.mensagem_ouvidoria.create({
             data: {
-                status_mensagem_id_status_mensagem: idStatus,
                 usuario_id_usuario: idUsuario,
                 categoria_mensagem_id_categoria_mensagem: idCategoria,
                 assunto,
@@ -72,12 +45,28 @@ export default class OuvidoriaServices {
     }
 
     static async listarMensagens() {
-        const mensagens = await prisma.mensagem.findMany()
+        const mensagens = await prisma.mensagem_ouvidoria.findMany({
+            include: {
+                usuario: {
+                    select: {
+                        id_usuario: true,
+                        primeiro_nome: true,
+                        ultimo_nome: true,
+                        email: true
+                    },
+                },
+                categoria_mensagem: {
+                    select: {
+                        nome: true
+                    }
+                }
+            }
+        })
         return mensagens
     }
 
     static async listarMensagensPorUsuario(idUsuario) {
-        const mensagens = await prisma.mensagem.findMany({
+        const mensagens = await prisma.mensagem_ouvidoria.findMany({
             where: {
                 usuario_id_usuario: idUsuario
             }
@@ -101,13 +90,13 @@ export default class OuvidoriaServices {
         return mensagem
     }
 
-    static async alterarStatusMensagem(idMensagem, idStatus) {
+    static async alterarStatusMensagem(idMensagem, status) {
         const mensagem = await prisma.mensagem.update({
             where: {
                 id_mensagem_ouvidoria: idMensagem
             },
             data: {
-                status_mensagem_id_status_mensagem: idStatus
+                status_mensagem: status
             }
         })
         return mensagem
