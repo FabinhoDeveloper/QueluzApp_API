@@ -91,6 +91,18 @@ export default class OuvidoriaServices {
     }
 
     static async alterarStatusMensagem(idMensagem, status) {
+        const mensagemExistente = await prisma.mensagem_ouvidoria.findUnique({
+            where: {
+                id_mensagem_ouvidoria: idMensagem
+            }
+        });
+
+        if (!mensagemExistente) {
+            const erro = new Error("Mensagem não encontrada.");
+            erro.status = 404;
+            throw erro;
+        }
+
         const mensagem = await prisma.mensagem_ouvidoria.update({
             where: {
                 id_mensagem_ouvidoria: idMensagem
@@ -103,7 +115,7 @@ export default class OuvidoriaServices {
     }
 
     static async excluirMensagem(idMensagem) {
-        const mensagem = await prisma.mensagem.findUnique({
+        const mensagem = await prisma.mensagem_ouvidoria.findUnique({
             where: {
                 id_mensagem_ouvidoria: idMensagem
             }
@@ -115,10 +127,12 @@ export default class OuvidoriaServices {
             throw erro
         }
 
-        await prisma.mensagem.delete({
+        const mensagemExcluida = await prisma.mensagem_ouvidoria.delete({
             where: {
                 id_mensagem_ouvidoria: idMensagem
             }
         })
+
+        return mensagemExcluida
     }
 }
