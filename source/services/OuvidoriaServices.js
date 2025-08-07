@@ -91,7 +91,7 @@ export default class OuvidoriaServices {
     }
 
     static async alterarStatusMensagem(idMensagem, status) {
-        const mensagem = await prisma.mensagem.update({
+        const mensagem = await prisma.mensagem_ouvidoria.update({
             where: {
                 id_mensagem_ouvidoria: idMensagem
             },

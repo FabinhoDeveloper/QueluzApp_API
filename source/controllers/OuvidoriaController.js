@@ -49,7 +49,7 @@ export default class OuvidoriaController {
         const { idUsuario } = req.params;
 
         try {
-            const mensagens = await OuvidoriaServices.listarMensagensPorUsuario(idUsuario);
+            const mensagens = await OuvidoriaServices.listarMensagensPorUsuario(Number(idUsuario));
             res.status(200).json(mensagens);
         } catch (error) {
             console.error(`Erro ao listar mensagens por usuário: ${error.message}`);
@@ -75,7 +75,7 @@ export default class OuvidoriaController {
         const { status } = req.body;
 
         try {
-            const mensagem = await OuvidoriaServices.alterarStatusMensagem(idMensagem, status);
+            const mensagem = await OuvidoriaServices.alterarStatusMensagem(Number(idMensagem), status);
             res.status(200).json({ mensagem: `Status da mensagem alterado com sucesso!`, mensagem });
         } catch (error) {
             console.error(`Erro ao alterar status da mensagem: ${error.message}`);
