@@ -15,7 +15,7 @@ import indexRoutes from './source/routes/index.js'
 import verificacaoToken from './source/middlewares/verificacaoToken.js'
 
 app.use('/auth', AuthRoutes)
-app.use('/', /*verificacaoToken,*/ indexRoutes) // Middleware de verificação de token aplicado globalmente
+app.use('/', verificacaoToken, indexRoutes) // Middleware de verificação de token aplicado globalmente
 
 // Instância do Servidor
 app.listen(PORT, () => {
