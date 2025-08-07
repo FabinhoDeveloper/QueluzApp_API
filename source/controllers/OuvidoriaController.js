@@ -87,7 +87,7 @@ export default class OuvidoriaController {
         const { idMensagem } = req.params;
 
         try {
-            const mensagem = await OuvidoriaServices.excluirMensagem(Number(idMensagem));
+            await OuvidoriaServices.excluirMensagem(Number(idMensagem));
             return res.status(204).send()
         } catch (error) {
             console.error(`Erro ao excluir mensagem: ${error.message}`);
