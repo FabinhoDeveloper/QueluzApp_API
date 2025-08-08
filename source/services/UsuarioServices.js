@@ -82,6 +82,14 @@ export default class UsuarioServices {
             throw error;
         }
 
+        if (cpf) {
+            if (!validarCpf(cpf)) {
+                const error = new Error("CPF inválido.")
+                error.status = 400
+                throw error
+            }
+        }
+
         const saltRounds = 10;
         const senhaHash = await bcrypt.hash(senha, saltRounds);
 
@@ -109,8 +117,6 @@ export default class UsuarioServices {
                 id_usuario: idUsuario
             }
         });
-
-        console.log(usuarioExistente)
 
         if (!usuarioExistente) {
             const error = new Error("Usuário não encontrado.");
