@@ -63,6 +63,18 @@ export default class FuncionarioServices {
             throw erro
         }
 
+        const funcionarioExistente = await prisma.funcionario.findUnique({
+            where: {
+                usuario_id_usuario: id_usuario
+            }
+        })
+        
+        if (funcionarioExistente) {
+            const erro = new Error("Funcionário já cadastrado.")
+            erro.status = 409
+            throw erro
+        }
+
         const funcionario = await prisma.funcionario.create({
             data: {
                 usuario_id_usuario: id_usuario,

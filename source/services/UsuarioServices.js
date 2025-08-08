@@ -1,6 +1,8 @@
 import prisma from "../config/prisma.js";
 import bcrypt from "bcrypt";
 
+import validarCpf from "../helpers/validarCpf.js";
+
 export default class UsuarioServices {
     static async listarUsuarios() {
         const usuarios = await prisma.usuario.findMany()
@@ -11,6 +13,12 @@ export default class UsuarioServices {
     static async cadastrarUsuario(primeiro_nome, ultimo_nome, cpf, telefone, email, senha, endereco) {
         if (!primeiro_nome || !ultimo_nome || !cpf || !telefone || !email || !senha || !endereco) {
             const error = new Error("Todos os campos são obrigatórios.")
+            error.status = 400
+            throw error
+        }
+
+        if (!validarCpf(cpf)) {
+            const error = new Error("CPF inválido.")
             error.status = 400
             throw error
         }
@@ -102,17 +110,21 @@ export default class UsuarioServices {
             }
         });
 
+        console.log(usuarioExistente)
+
         if (!usuarioExistente) {
             const error = new Error("Usuário não encontrado.");
             error.status = 404;
             throw error;
         }
 
-        await prisma.usuario.delete({
+        const usuarioDeletado = await prisma.usuario.delete({
             where: {
                 id_usuario: idUsuario
             }
         });
+
+        return usuarioDeletado
     }
 
     static async confirmarTelefone(idUsuario) {

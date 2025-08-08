@@ -20,10 +20,10 @@ import verificacaoToken from './source/middlewares/verificacaoToken.js'
 
 app.use('/auth', AuthRoutes)
 app.use("/usuario", UsuarioRoutes)
-app.use("/funcionario", verificacaoToken, FuncionarioRoutes)
-app.use("/ouvidoria", verificacaoToken, OuvidoriaRoutes)
-app.use("/carro", verificacaoToken, CarroRoutes)
-app.use("/viagem", verificacaoToken, ViagemRouter)
+app.use("/funcionario", /*verificacaoToken,*/ FuncionarioRoutes)
+app.use("/ouvidoria", /*verificacaoToken,*/ OuvidoriaRoutes)
+app.use("/carro", /*verificacaoToken,*/ CarroRoutes)
+app.use("/viagem", /*verificacaoToken,*/ ViagemRouter)
 
 // Instância do Servidor
 app.listen(PORT, () => {

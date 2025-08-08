@@ -24,8 +24,8 @@ model carro {
   placa                        String?       @db.VarChar(25)
   capacidade                   Int?
   fabricante                   String        @db.VarChar(255)
-  status_carro                 status_carro? @relation(fields: [status_carro_id_status_carro], references: [id_status_carro], onDelete: NoAction, onUpdate: NoAction)
-  tipo_carro                   tipo_carro?   @relation(fields: [tipo_carro_id_tipo_carro], references: [id_tipo_carro], onDelete: NoAction, onUpdate: NoAction)
+  status_carro                 status_carro? @relation(fields: [status_carro_id_status_carro], references: [id_status_carro], onDelete: Cascade, onUpdate: Cascade)
+  tipo_carro                   tipo_carro?   @relation(fields: [tipo_carro_id_tipo_carro], references: [id_tipo_carro], onDelete: Cascade, onUpdate: Cascade)
   viagem                       viagem[]
 }
 
@@ -43,18 +43,20 @@ model funcao {
 
 model funcionario {
   id_funcionario     Int                  @id @default(autoincrement())
-  usuario_id_usuario Int?
+  usuario_id_usuario Int?                 @unique  
   matricula          Int?
-  usuario            usuario?             @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-  funcionario_funcao funcionario_funcao[]
+  usuario            usuario?             @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: Cascade)
   viagem             viagem[]
+  funcionario_funcao funcionario_funcao[]
 }
 
 model funcionario_funcao {
   funcionario_id_funcionario Int
   funcao_id_funcao           Int
-  funcao                     funcao      @relation(fields: [funcao_id_funcao], references: [id_funcao], onDelete: NoAction, onUpdate: NoAction)
-  funcionario                funcionario @relation(fields: [funcionario_id_funcionario], references: [id_funcionario], onDelete: NoAction, onUpdate: NoAction)
+  
+  // Definir as relações
+  funcionario funcionario @relation(fields: [funcionario_id_funcionario], references: [id_funcionario], onDelete: Cascade, onUpdate: Cascade)
+  funcao      funcao      @relation(fields: [funcao_id_funcao], references: [id_funcao], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([funcionario_id_funcionario, funcao_id_funcao])
 }
@@ -70,8 +72,8 @@ model mensagem_ouvidoria {
   mensagem                                 String              @db.VarChar(255)
   data_envio                               DateTime?           @default(now()) @db.Timestamp(6)
   status_mensagem                          String?             @db.VarChar(255)
-  categoria_mensagem                       categoria_mensagem? @relation(fields: [categoria_mensagem_id_categoria_mensagem], references: [id_categoria_mensagem], onDelete: NoAction, onUpdate: NoAction)
-  usuario                                  usuario?            @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  categoria_mensagem                       categoria_mensagem? @relation(fields: [categoria_mensagem_id_categoria_mensagem], references: [id_categoria_mensagem], onDelete: Cascade, onUpdate: Cascade)
+  usuario                                  usuario?            @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model parada {
@@ -79,8 +81,8 @@ model parada {
   solicitante_viagem_id_solicitante_viagem Int?
   viagem_id_viagem                         Int?
   endereco                                 String              @db.VarChar(255)
-  solicitante_viagem                       solicitante_viagem? @relation(fields: [solicitante_viagem_id_solicitante_viagem], references: [id_solicitante_viagem], onDelete: NoAction, onUpdate: NoAction)
-  viagem                                   viagem?             @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+  solicitante_viagem                       solicitante_viagem? @relation(fields: [solicitante_viagem_id_solicitante_viagem], references: [id_solicitante_viagem], onDelete: Cascade, onUpdate: Cascade)
+  viagem                                   viagem?             @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model solicitante_viagem {
@@ -126,8 +128,8 @@ model usuario {
   senha               String               @db.VarChar(255)
   endereco            String               @db.VarChar(255)
   telefone_confirmado Boolean?             @default(false)
-  funcionario         funcionario[]
   mensagem_ouvidoria  mensagem_ouvidoria[]
+  funcionario         funcionario[]
   viagem_usuario      viagem_usuario[]
 }
 
@@ -137,8 +139,8 @@ model viagem {
   carro_id_carro             Int?
   data_partida               DateTime              @db.Timestamp(6)
   parada                     parada[]
-  carro                      carro?                @relation(fields: [carro_id_carro], references: [id_carro], onDelete: NoAction, onUpdate: NoAction)
-  funcionario                funcionario?          @relation(fields: [funcionario_id_funcionario], references: [id_funcionario], onDelete: NoAction, onUpdate: NoAction)
+  carro                      carro?                @relation(fields: [carro_id_carro], references: [id_carro], onDelete: Cascade, onUpdate: Cascade)
+  funcionario                funcionario?          @relation(fields: [funcionario_id_funcionario], references: [id_funcionario], onDelete: Cascade, onUpdate: Cascade)
   viagem_acompanhante        viagem_acompanhante[]
   viagem_usuario             viagem_usuario[]
 }
@@ -147,9 +149,9 @@ model viagem_acompanhante {
   viagem_id_viagem                         Int
   acompanhante_id_acompanhante             Int
   solicitante_viagem_id_solicitante_viagem Int?
-  acompanhante                             acompanhante        @relation(fields: [acompanhante_id_acompanhante], references: [id_acompanhante], onDelete: NoAction, onUpdate: NoAction)
-  solicitante_viagem                       solicitante_viagem? @relation(fields: [solicitante_viagem_id_solicitante_viagem], references: [id_solicitante_viagem], onDelete: NoAction, onUpdate: NoAction)
-  viagem                                   viagem              @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+  acompanhante                             acompanhante        @relation(fields: [acompanhante_id_acompanhante], references: [id_acompanhante], onDelete: Cascade, onUpdate: Cascade)
+  solicitante_viagem                       solicitante_viagem? @relation(fields: [solicitante_viagem_id_solicitante_viagem], references: [id_solicitante_viagem], onDelete: Cascade, onUpdate: Cascade)
+  viagem                                   viagem              @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([viagem_id_viagem, acompanhante_id_acompanhante])
 }
@@ -158,9 +160,9 @@ model viagem_usuario {
   viagem_id_viagem               Int
   usuario_id_usuario             Int
   status_viagem_id_status_viagem Int?
-  status_viagem                  status_viagem? @relation(fields: [status_viagem_id_status_viagem], references: [id_status_viagem], onDelete: NoAction, onUpdate: NoAction)
-  usuario                        usuario        @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
-  viagem                         viagem         @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: NoAction, onUpdate: NoAction)
+  status_viagem                  status_viagem? @relation(fields: [status_viagem_id_status_viagem], references: [id_status_viagem], onDelete: Cascade, onUpdate: Cascade)
+  usuario                        usuario        @relation(fields: [usuario_id_usuario], references: [id_usuario], onDelete: Cascade, onUpdate: Cascade)
+  viagem                         viagem         @relation(fields: [viagem_id_viagem], references: [id_viagem], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([viagem_id_viagem, usuario_id_usuario])
 }
