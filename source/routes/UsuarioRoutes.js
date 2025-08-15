@@ -4,6 +4,7 @@ import { Router } from "express";
 const router = Router()
 
 router.get("/listar", UsuarioController.listarUsuarios)
+router.get("/listar/:cpf", UsuarioController.listarUsuarioPorCPF)
 router.post("/cadastrar", UsuarioController.cadastrarUsuario)
 router.put("/editar/:idUsuario", UsuarioController.editarUsuario)
 router.delete("/excluir/:idUsuario", UsuarioController.excluirUsuario)

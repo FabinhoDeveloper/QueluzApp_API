@@ -12,6 +12,18 @@ export default class UsuarioController {
         }
     }
 
+    static async listarUsuarioPorCPF(req, res) {
+        const { cpf } = req.params;
+
+        try {
+            const usuario = await UsuarioServices.listarUsuarioPorCPF(cpf);
+            res.status(200).json(usuario);
+        } catch (error) {
+            console.error(`Erro ao listar usuário por CPF: ${error.message}`);
+            return res.status(error.status || 500).json({ mensagem: `Erro ao listar usuário por CPF: ${error.message}` });
+        }
+    }
+
     static async cadastrarUsuario(req, res) {
         const {primeiro_nome, ultimo_nome, cpf, telefone, email, senha, endereco} = req.body
 

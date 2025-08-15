@@ -10,6 +10,28 @@ export default class UsuarioServices {
         return usuarios
     }
 
+    static async listarUsuarioPorCPF(cpf) {
+        if (!validarCpf(cpf)) {
+            const error = new Error("CPF inválido.")
+            error.status = 400
+            throw error
+        }
+
+        const usuario = await prisma.usuario.findUnique({
+            where: {
+                cpf
+            }
+        });
+
+        if (!usuario) {
+            const error = new Error("Usuário não encontrado.")
+            error.status = 404
+            throw error
+        }
+
+        return usuario
+    }
+
     static async cadastrarUsuario(primeiro_nome, ultimo_nome, cpf, telefone, email, senha, endereco) {
         if (!primeiro_nome || !ultimo_nome || !cpf || !telefone || !email || !senha || !endereco) {
             const error = new Error("Todos os campos são obrigatórios.")
